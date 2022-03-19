@@ -12,10 +12,15 @@ const removeServer = (id: any) => {
   return http.delete(`/server/${id}`);
 };
 
+const updateStatus = (id: any, data: any) => {
+  return http.put(`/server/${id}`, data);
+};
+
 const ServerService = {
   getAllServers,
   createNewServer,
   removeServer,
+  updateStatus,
 };
 
 export default ServerService;

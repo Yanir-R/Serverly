@@ -15,12 +15,27 @@ const serverSchema = new mongoose.Schema(
     Type: {
       type: Object,
       name: String,
-      PricePerMin: Number,
+      pricePerMin: Number,
       required: [true, "Server Info-Type is required"],
     },
     isRunning: {
       type: Boolean,
-      required: true,
+    },
+    closeTimes: {
+      type: Array,
+      default: [],
+    },
+    openTimes: {
+      type: Array,
+      default: [],
+    },
+    totalCost: {
+      type: Number,
+      default: 0,
+    },
+    activityMinutesToPay: {
+      type: Number,
+      default: 0,
     },
   },
   {

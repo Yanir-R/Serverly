@@ -1,15 +1,33 @@
 import React, { useEffect } from "react";
 import { ServerModel } from "../../react-app-env";
 import ServerService from "../../services/ServerService";
+import { GetAllServers } from "../crud/GetAllServers";
+import { AddNewServer } from "./AddNewServer";
 
-export default function ServerTable() {
-  const [data, setData] = React.useState([]);
+
+export const  ServerTable: React.FC =() => {
+  // const ServerTypes: any = {
+  //   "t1.micro": { name: "t1.micro", pricePerMin: 0.043 },
+  //   "t1.xl": { name: "t1.xl", pricePerMin: 0.1 },
+  //   "t2.xxl": { name: "t2.xxl", pricePerMin: 0.5 },
+  // };
+  // const initialServerState: any = {
+  //   Name: "",
+  //   IP: "",
+  //   user_input_type: "",
+  //   Type: ServerTypes["t1.micro"],
+  //   isRunning: false,
+  //   openTimes: [],
+  // };
+
+  const [data, setData] = React.useState<ServerModel>();
+  const [server, setServer] = React.useState([]);
+  const [submitted, setSubmitted] = React.useState(false);
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await ServerService.getAllServers();
-        console.log("my data ->", response.data);
         setData(response.data);
       } catch (error) {
         console.log(error);
@@ -19,16 +37,10 @@ export default function ServerTable() {
   }, []);
 
   return (
-    <div>
-      <h1>ServerTable Page</h1>
-      {data.map((server: ServerModel) => (
-        <ul key={server.Name}>
-          <li>Server Name - {server.Name}</li>
-          <li>Server IP - {server.IP}</li>
-          <li>Server Type - {server?.Type?.name}</li>
-          <li>Server Price - {server?.Type?.PricePerMin}</li>
-        </ul>
-      ))}
-    </div>
+    <>
+      <h1>Server Table:</h1>
+      <GetAllServers data={data} setData={setData} />
+      <AddNewServer setServer={setServer} setSubmitted={setSubmitted} submitted={submitted} server={server} />
+    </>
   );
 }
