@@ -7,7 +7,7 @@ export const ServersTable: React.FC<{
   data: ServerModel[];
   setData: React.Dispatch<React.SetStateAction<ServerModel[]>>;
 }> = ({ data, setData }) => {
-
+  
   // Calculates the time in minutes that the server runs & multiplies by the price of the server type:
   data = data.map((server) => {
     const activityMinutesToPay =
@@ -16,7 +16,7 @@ export const ServersTable: React.FC<{
           return (server.closeTimes[index] || Date.now()) - openTime;
         })
         .reduce((acc: number, time: number) => acc + time, 0) / 60000;
-    const totalCost = activityMinutesToPay * server.Type.pricePerMin;
+    const totalCost = activityMinutesToPay * server.serverType.serverTypePricePerMin;
     return {
       ...server,
       activityMinutesToPay,
@@ -24,18 +24,17 @@ export const ServersTable: React.FC<{
     };
 
     // --- //
-
   });
   return (
-    <Table bordered cellBordered height={400} data={data}>
+    <Table width={1075} bordered cellBordered height={350} data={data}>
       <Table.Column width={200} align="center">
         <Table.HeaderCell>IP Address</Table.HeaderCell>
-        <Table.Cell dataKey="IP" />
+        <Table.Cell dataKey="serverIP" />
       </Table.Column>
 
       <Table.Column width={200} align="center">
         <Table.HeaderCell>Server Name</Table.HeaderCell>
-        <Table.Cell dataKey="Name" />
+        <Table.Cell dataKey="serverName" />
       </Table.Column>
 
       <Table.Column width={200} align="center">
@@ -68,12 +67,12 @@ export const ServersTable: React.FC<{
 
       <Table.Column width={100} align="center">
         <Table.HeaderCell>Type</Table.HeaderCell>
-        <Table.Cell dataKey="Type.name" />
+        <Table.Cell dataKey="serverType.serverTypeName" />
       </Table.Column>
 
       <Table.Column width={120} align="center">
         <Table.HeaderCell>Price</Table.HeaderCell>
-        <Table.Cell dataKey="Type.pricePerMin" />
+        <Table.Cell dataKey="serverType.serverTypePricePerMin" />
       </Table.Column>
 
       <Table.Column width={120} align="center">

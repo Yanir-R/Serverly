@@ -15,17 +15,16 @@ export const Home: React.FC = () => {
   }, []);
 
   return (
-    <FlexboxGrid>
-      <FlexboxGrid.Item colspan={24}>
-        <div>Header!</div>
+    <FlexboxGrid justify="center">
+      <FlexboxGrid.Item colspan={16}>
+        <h1 style={{ display: "flex", justifyContent: "center" }}>Serverly</h1>
       </FlexboxGrid.Item>
-      <FlexboxGrid.Item colspan={24}>
-        <h1>Server Table:</h1>
+
+      <FlexboxGrid.Item colspan={16}>
         <ServersTable data={data} setData={setData} />
-        <AddNewServer />
       </FlexboxGrid.Item>
-      <FlexboxGrid.Item colspan={24}>
-        <div>Footer</div>
+      <FlexboxGrid.Item colspan={10}>
+        <AddNewServer />
       </FlexboxGrid.Item>
     </FlexboxGrid>
   );

@@ -2,17 +2,17 @@ const mongoose = require("mongoose");
 
 const serverSchema = new mongoose.Schema(
   {
-    Name: {
+    serverName: {
       type: String,
       required: [true, "Server Name is required"],
       unique: [true, "Server Name is already taken"],
     },
-    IP: {
+    serverIP: {
       type: String,
       required: [true, "Server IP is required"],
       unique: [true, "Server IP is already taken"],
     },
-    Type: {
+    serverType: {
       type: Object,
       name: String,
       pricePerMin: Number,

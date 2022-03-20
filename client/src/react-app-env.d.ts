@@ -2,11 +2,11 @@
 
 export interface ServerModel {
   _id?: string;
-  Name: string;
-  IP: string;
-  Type: {
-    name: string;
-    pricePerMin: number;
+  serverName: string;
+  serverIP: string;
+  serverType: {
+    serverTypeName: string;
+    serverTypePricePerMin: number;
   };
   isRunning: boolean;
   openTimes: number[];
