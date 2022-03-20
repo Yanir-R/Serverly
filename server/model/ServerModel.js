@@ -29,14 +29,6 @@ const serverSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    totalCost: {
-      type: Number,
-      default: 0,
-    },
-    activityMinutesToPay: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,

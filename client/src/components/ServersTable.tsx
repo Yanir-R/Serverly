@@ -1,19 +1,33 @@
 import React from "react";
 import { Button, Table, Toggle } from "rsuite";
-import { ServerModel } from "../../react-app-env";
-import ServerService from "../../services/ServerService";
+import { ServerModel } from "../react-app-env";
+import ServerService from "../services/ServerService";
 
-export const GetAllServers: React.FC<any> = ({ data, setData }) => {
+export const ServersTable: React.FC<{
+  data: ServerModel[];
+  setData: React.Dispatch<React.SetStateAction<ServerModel[]>>;
+}> = ({ data, setData }) => {
+
+  // Calculates the time in minutes that the server runs & multiplies by the price of the server type:
+  data = data.map((server) => {
+    const activityMinutesToPay =
+      server.openTimes
+        .map((openTime: number, index) => {
+          return (server.closeTimes[index] || Date.now()) - openTime;
+        })
+        .reduce((acc: number, time: number) => acc + time, 0) / 60000;
+    const totalCost = activityMinutesToPay * server.Type.pricePerMin;
+    return {
+      ...server,
+      activityMinutesToPay,
+      totalCost,
+    };
+
+    // --- //
+
+  });
   return (
-    <Table
-      bordered
-      cellBordered
-      height={400}
-      data={data}
-      // onRowClick={(data: any) => {
-      //   console.log(data);
-      // }}
-    >
+    <Table bordered cellBordered height={400} data={data}>
       <Table.Column width={200} align="center">
         <Table.HeaderCell>IP Address</Table.HeaderCell>
         <Table.Cell dataKey="IP" />
@@ -26,41 +40,19 @@ export const GetAllServers: React.FC<any> = ({ data, setData }) => {
 
       <Table.Column width={200} align="center">
         <Table.HeaderCell>Activity Time Cost</Table.HeaderCell>
-        <Table.Cell dataKey="activityMinutesToPay"></Table.Cell>
+        <Table.Cell dataKey="totalCost"></Table.Cell>
       </Table.Column>
 
       <Table.Column width={100} align="center">
         <Table.HeaderCell>Toggle</Table.HeaderCell>
         <Table.Cell dataKey="isRunning">
           {(rowData) => {
-            const handleUpdateStatus = async (status: any) => {
-              let statusData: any = {
+            const handleUpdateStatus = async (status: boolean) => {
+              let statusData = {
                 isRunning: status,
               };
-
-              // if current isRunning is TRUE, it will change to FALSE
-
-              if (rowData.isRunning) {
-                statusData["closeTimes"] = rowData.closeTimes.concat([Date.now()]);
-                let activityMinutesToPay =
-                  rowData.closeTimes
-                    .map(function (item: any, index: any) {
-                      return item - rowData.openTimes[index];
-                    })
-                    .reduce((partialSum: any, a: any) => partialSum + a, 0) / 60000;
-
-                statusData["totalCost"] = rowData.Type.pricePerMin * activityMinutesToPay;
-
-                statusData["activityMinutesToPay"] = activityMinutesToPay;
-              } else {
-                statusData["openTimes"] = rowData.openTimes.concat([Date.now()]);
-              }
-
-              await ServerService.updateStatus(rowData._id, statusData).then((res) => {
-                data.filter((server: ServerModel) => server._id === rowData._id);
-              });
+              await ServerService.updateStatus(rowData._id, statusData);
             };
-
             return (
               <Toggle
                 size="md"

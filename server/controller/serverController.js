@@ -13,7 +13,18 @@ exports.getAllServers = async (req, reply) => {
 exports.updateServer = async (req, reply) => {
   try {
     const id = req.params.id;
-    let result = await ServerModel.findByIdAndUpdate(id, req.body, {
+    const currentServer = await ServerModel.findById(id);
+    currentServer.isRunning = req.body.isRunning;
+
+    // if current isRunning is TRUE, it will change to FALSE
+
+    if (currentServer.isRunning) {
+      currentServer.openTimes.push(Date.now());
+    } else {
+      currentServer.closeTimes.push(Date.now());
+    }
+
+    let result = await ServerModel.findByIdAndUpdate(id, currentServer, {
       new: true,
     });
     return result;

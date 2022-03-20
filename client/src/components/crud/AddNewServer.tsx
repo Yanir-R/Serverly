@@ -1,18 +1,21 @@
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import ServerService from "../../services/ServerService";
+import { ServerModel } from "../../react-app-env";
+export const AddNewServer: React.FC = () => {
+  const [server, setServer] = useState<any>();
+  const [submitted, setSubmitted] = useState(false);
 
-export const AddNewServer: React.FC<any> = ({ setServer, setSubmitted, submitted, server }) => {
   const ServerTypes: any = {
     "t1.micro": { name: "t1.micro", pricePerMin: 0.043 },
     "t1.xl": { name: "t1.xl", pricePerMin: 0.1 },
     "t2.xxl": { name: "t2.xxl", pricePerMin: 0.5 },
   };
 
-  const initialServerState: any = {
+  const initialServerState: ServerModel = {
     Name: "",
     IP: "",
-    user_input_type: "",
-    Type: ServerTypes["t1.micro"],
+    userInputType: "",
+    Type: ServerTypes,
     isRunning: false,
     openTimes: [],
     closeTimes: [],
@@ -20,8 +23,8 @@ export const AddNewServer: React.FC<any> = ({ setServer, setSubmitted, submitted
     activityMinutesToPay: 0,
   };
 
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target as HTMLInputElement;
     setServer({ ...server, [name]: value });
   };
 
@@ -34,8 +37,8 @@ export const AddNewServer: React.FC<any> = ({ setServer, setSubmitted, submitted
     const data = {
       Name: server.Name,
       IP: server.IP,
-      user_input_type: server.user_input_type,
-      Type: ServerTypes[server.user_input_type],
+      userInputType: server.userInputType,
+      Type: ServerTypes[server.userInputType],
       isRunning: server.isRunning,
       openTimes: server.openTimes,
       closeTimes: server.closeTimes,
@@ -44,6 +47,7 @@ export const AddNewServer: React.FC<any> = ({ setServer, setSubmitted, submitted
     };
     ServerService.createNewServer(data)
       .then((res) => {
+        console.log("data ->", res.data);
         setServer(res.data);
         setSubmitted(true);
       })
@@ -62,29 +66,27 @@ export const AddNewServer: React.FC<any> = ({ setServer, setSubmitted, submitted
       ) : (
         <div>
           <div>
-            <div className="form-group">
+            <div>
               <label>Server Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="Name"
-                value={server.Name}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Server IP</label>
-              <input type="text" className="form-control" name="IP" value={server.IP} onChange={handleInputChange} />
+              <input type="text" name="Name" onChange={handleInputChange} />
             </div>
             <div>
-              <select title="Select your Server Type" name="user_input_type" onChange={handleInputChange}>
+              <label>Server IP</label>
+              <input type="text" name="IP" onChange={handleInputChange} />
+            </div>
+            <div>
+              <select
+                title="Select your Server Type"
+                name="userInputType"
+                onChange={handleInputChange as unknown as React.ChangeEventHandler<HTMLSelectElement>}
+              >
                 <option value="t1.xl">Select Server</option>
                 <option value="t1.xl">t1.xl</option>
                 <option value="t1.micro">t1.micro</option>
                 <option value="t2.xxl">t2.xxl</option>
               </select>
             </div>
-            <div className="form-group">
+            <div>
               <button className="btn btn-primary" onClick={saveServer}>
                 Submit
               </button>
